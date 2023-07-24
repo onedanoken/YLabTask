@@ -7,7 +7,8 @@ class Menu(Base):
     __tablename__ = "menu"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
+    name = Column(String(50), unique=True, index=True)
+    description = Column(String(50))
     submenus = relationship("submenu", back_populates="menu", cascade="all, delete")
 
 
@@ -27,5 +28,5 @@ class SubMenu(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     menu_id = Column(Integer, ForeignKey("menu.id"))
-    menu = relationship("Menu", back_populates="submenus")
+    menu = relationship("Menu", back_populates="submenu")
     dishes = relationship("Dish", back_populates="submenu", cascade="all, delete")

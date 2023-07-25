@@ -1,13 +1,20 @@
-from fastapi import FastAPI
-import models
+import json
+from typing import List
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from database import engine, SessionLocal
-
+import models
+from models import Menu, SubMenu, Dish
+from schemas import MenuCreate, SubMenuCreate, DishCreate, MenuUpdate, SubMenuUpdate, DishUpdate, MenuOut, SubMenuOut, DishOut
+from crud import get_menus
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 
 
-def get_db():
+def get_db() -> Session:
     try:
         db = SessionLocal()
         yield db
@@ -15,11 +22,12 @@ def get_db():
         db.close()
 
 
-'''@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+@app.get("/api/v1/menus", response_model=List[MenuOut])
+def read_menus(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    menus = get_menus(db, skip=skip, limit=limit)
+    return menus
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}'''
+# @app.post("/api/v1/menus", response_model=MenuOut)
+# def create_menu(menu: MenuCreate, db: Session = Depends(get_db)):
+#     db_menu = Menu(name=menu.name, description=menu.description)

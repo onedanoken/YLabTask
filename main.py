@@ -45,7 +45,7 @@ def read_menu(target_menu_id: int, db: Session = Depends(get_db)):
     return menu
 
 
-@app.put("/api/v1/menus/{target_menu_id}", response_model=MenuOut, status_code=200)
+@app.post("/api/v1/menus/{target_menu_id}", response_model=MenuOut, status_code=200)
 def update_menu(target_menu_id: int, menu: MenuUpdate, db: Session = Depends(get_db)):
     db_menu = db.query(Menu).filter(Menu.id == target_menu_id).first()
 

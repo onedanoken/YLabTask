@@ -27,6 +27,14 @@ def read_menus(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     menus = get_menus(db, skip=skip, limit=limit)
     return menus
 
+@app.post("/api/v1/menus", response_model=MenuOut)
+def create_menu(menu: MenuCreate, db: Session = Depends(get_db)):
+    db_menu = Menu(title=menu.title, description=menu.description)
+    db.add(db_menu)
+    db.commit()
+    db.refresh(db_menu)
+    return db_menu
+
 
 # @app.post("/api/v1/menus", response_model=MenuOut)
 # def create_menu(menu: MenuCreate, db: Session = Depends(get_db)):
